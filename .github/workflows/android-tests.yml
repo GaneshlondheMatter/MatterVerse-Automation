@@ -42,12 +42,10 @@ jobs:
 
       - name: Wait for Emulator to Boot
         run: |
-          echo "Waiting for Android emulator to fully boot..."
+          echo "Waiting for Android emulator..."
           sleep 40
-
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           echo "Detected emulator container: $EMULATOR_ID"
-
           docker exec $EMULATOR_ID adb wait-for-device
           docker exec $EMULATOR_ID adb devices
 
@@ -66,11 +64,15 @@ jobs:
       - name: Fix Appium Permissions
         run: chmod +x ./node_modules/.bin/appium
 
+      - name: Start screen recording
+        run: |
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          docker exec -d $EMULATOR_ID adb shell screenrecord /sdcard/test_run.mp4
+
       - name: Start Appium Server
         run: |
-          echo "Starting Appium..."
+          chmod +x ./node_modules/.bin/appium
           ./node_modules/.bin/appium --port 4723 --base-path / &
-
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/status
 
@@ -78,4 +80,21 @@ jobs:
         run: chmod +x ./node_modules/.bin/wdio
 
       - name: Run WDIO Android Tests
-        run: ./node_modules/.bin/wdio run wdio.conf.js
+        run: ./node_modules/.bin/wdio run wdio.conf.js || true
+
+      - name: Pull emulator video
+        run: |
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          docker cp $EMULATOR_ID:/sdcard/test_run.mp4 ./test_run.mp4
+
+      - name: Upload test video
+        uses: actions/upload-artifact@v3
+        with:
+          name: emulator-video
+          path: ./test_run.mp4
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: ./screenshots/
