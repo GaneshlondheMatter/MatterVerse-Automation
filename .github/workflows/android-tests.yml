@@ -44,17 +44,22 @@ jobs:
         run: |
           echo "Waiting for Android emulator..."
           sleep 35
-          docker exec emulator adb devices
+
+          # Detect emulator container ID
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          echo "Emulator container: $EMULATOR_ID"
+
+          docker exec $EMULATOR_ID adb devices
 
       - name: Copy APK into Emulator Container
         run: |
-          echo "Copying APK into emulator container..."
-          docker cp app/MatterVerseQA_1.91.apk emulator:/root/tmp/MatterVerseQA_1.91.apk
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          docker cp app/MatterVerseQA_1.91.apk $EMULATOR_ID:/root/tmp/MatterVerseQA_1.91.apk
 
       - name: Install APK inside Emulator
         run: |
-          echo "Installing MatterVerseQA APK..."
-          docker exec emulator adb install -r /root/tmp/MatterVerseQA_1.91.apk
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          docker exec $EMULATOR_ID adb install -r /root/tmp/MatterVerseQA_1.91.apk
 
       - name: Start Appium Server
         run: |
