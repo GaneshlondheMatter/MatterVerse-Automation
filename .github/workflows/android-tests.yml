@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * *' # Daily at midnight
+    - cron: '0 0 * * *'
 
 jobs:
   android-tests:
@@ -23,26 +23,33 @@ jobs:
           - 5555:5555
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'   # Upgrade Node to avoid EBADENGINE issues
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --save-dev appium wait-on   # Ensure Appium and wait-on installed
 
-    - name: Start Appium Server
-      run: |
-        # Start Appium in background
-        npx appium --port 4723 &
-        echo "Waiting for Appium to be ready..."
-        npx wait-on http://localhost:4723/wd/hub/status
+      - name: Wait for Android Emulator to Boot
+        run: |
+          echo "Waiting for emulator to boot..."
+          sleep 25
 
-    - name: Fix Permissions
-      run: chmod +x ./node_modules/.bin/wdio
+      - name: Start Appium Server
+        run: |
+          echo "Starting Appium..."
+          npx appium --port 4723 &
+          echo "Waiting for Appium to be ready..."
+          npx wait-on http://localhost:4723/wd/hub/status
 
-    - name: Run Tests
-      run: ./node_modules/.bin/wdio run wdio.conf.js
+      - name: Fix Permissions
+        run: chmod +x ./node_modules/.bin/wdio
+
+      - name: Run Tests
+        run: ./node_modules/.bin/wdio run wdio.conf.js
