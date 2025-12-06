@@ -78,7 +78,10 @@ jobs:
       - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      # ✅ UPDATED SCREENSHOT SECTION
+      # ✅ Upload Screenshots
+      - name: Verify Screenshots
+        run: ls -lh ./Screenshots
+
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
