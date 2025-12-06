@@ -16,7 +16,7 @@ jobs:
 
     services:
       docker:
-        image: budtmo/docker-android-x86-12.0
+        image: us-docker.pkg.dev/android-emulator-container/emulator/emulator
         ports:
           - 6080:6080
           - 5554:5554
