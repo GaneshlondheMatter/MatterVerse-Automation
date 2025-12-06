@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          lfs: true   # Ensures APK is downloaded
+          lfs: true
 
       - name: Verify APK Exists
         run: ls -lh apps/
@@ -44,12 +44,17 @@ jobs:
         run: |
           echo "Waiting for Android emulator..."
           sleep 35
-          adb devices
+          docker exec emulator adb devices
 
-      - name: Install APK into Emulator
+      - name: Copy APK into Emulator Container
+        run: |
+          echo "Copying APK into emulator container..."
+          docker cp app/MatterVerseQA_1.91.apk emulator:/root/tmp/MatterVerseQA_1.91.apk
+
+      - name: Install APK inside Emulator
         run: |
           echo "Installing MatterVerseQA APK..."
-          adb install -r app/MatterVerseQA_1.91.apk
+          docker exec emulator adb install -r /root/tmp/MatterVerseQA_1.91.apk
 
       - name: Start Appium Server
         run: |
