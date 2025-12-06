@@ -88,13 +88,13 @@ jobs:
           docker cp $EMULATOR_ID:/sdcard/test_run.mp4 ./test_run.mp4
 
       - name: Upload test video
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: emulator-video
           path: ./test_run.mp4
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: ./screenshots/
