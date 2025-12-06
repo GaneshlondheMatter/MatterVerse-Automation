@@ -1,0 +1,41 @@
+name: Android Appium Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+
+jobs:
+  android-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: budtmo/docker-android-x86-12.0
+        ports:
+          - 6080:6080
+          - 5554:5554
+          - 5555:5555
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start Appium Server
+      run: docker run -d -p 4723:4723 appium/appium
+
+    - name: Run Tests
+      run: npx wdio run wdio.conf.js
