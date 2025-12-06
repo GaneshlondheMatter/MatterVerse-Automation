@@ -37,5 +37,8 @@ jobs:
     - name: Start Appium Server
       run: docker run -d -p 4723:4723 appium/appium
 
+    - name: Fix Permissions
+      run: chmod +x ./node_modules/.bin/wdio
+
     - name: Run Tests
-      run: npx wdio run wdio.conf.js
+      run: ./node_modules/.bin/wdio run wdio.conf.js
