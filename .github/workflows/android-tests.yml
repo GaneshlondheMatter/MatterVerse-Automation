@@ -54,7 +54,7 @@ jobs:
       - name: Copy APK into Emulator Container
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp app/MatterVerseQA_1.91.apk $EMULATOR_ID:/root/tmp/MatterVerseQA_1.91.apk
+          docker cp apps/MatterVerseQA_1.91.apk $EMULATOR_ID:/root/tmp/MatterVerseQA_1.91.apk
 
       - name: Install APK inside Emulator
         run: |
