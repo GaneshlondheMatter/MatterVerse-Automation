@@ -44,21 +44,21 @@ jobs:
         run: |
           echo "Waiting for Android emulator..."
           sleep 40
+
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Detected emulator container: $EMULATOR_ID"
+          echo "Detected emulator: $EMULATOR_ID"
+
           docker exec $EMULATOR_ID adb wait-for-device
           docker exec $EMULATOR_ID adb devices
 
       - name: Copy APK into Emulator Container
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Copying APK into container..."
           docker cp apps/MatterVerseQA_1.91.apk $EMULATOR_ID:/tmp/MatterVerseQA_1.91.apk
 
       - name: Install APK inside Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Installing APK..."
           docker exec $EMULATOR_ID adb install -r /tmp/MatterVerseQA_1.91.apk
 
       - name: Fix Appium Permissions
@@ -67,12 +67,14 @@ jobs:
       - name: Start screen recording
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          echo "Starting screen recording..."
           docker exec -d $EMULATOR_ID adb shell screenrecord /sdcard/test_run.mp4
 
       - name: Start Appium Server
         run: |
           chmod +x ./node_modules/.bin/appium
           ./node_modules/.bin/appium --port 4723 --base-path / &
+
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/status
 
@@ -82,19 +84,33 @@ jobs:
       - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      - name: Pull emulator video
+      - name: Stop screen recording
+        if: always()
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp $EMULATOR_ID:/sdcard/test_run.mp4 ./test_run.mp4
+          echo "Stopping screenrecord..."
+          docker exec $EMULATOR_ID pkill -l SIGINT screenrecord || true
+          sleep 2
+          docker exec $EMULATOR_ID ls -lh /sdcard/
+
+      - name: Pull emulator video
+        if: always()
+        run: |
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          echo "Pulling video..."
+          docker cp $EMULATOR_ID:/sdcard/test_run.mp4 ./test_run.mp4 || echo "Video not found!"
 
       - name: Upload test video
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: emulator-video
           path: ./test_run.mp4
 
       - name: Upload screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: ./screenshots/
+          if-no-files-found: ignore
