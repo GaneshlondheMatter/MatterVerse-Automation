@@ -11,7 +11,7 @@ exports.config = {
         platformName: "Android",
         "appium:automationName": "UiAutomator2",
         "appium:deviceName": "RZCXA02WYYH",
-        "appium:platformVersion": "16",
+        "appium:platformVersion": "11",
         "appium:appPackage": "com.matter.companion.qa",
         "appium:appActivity": "com.matter.companion.view.onbording.OnBoardingActivity",
         "appium:noReset": true,
