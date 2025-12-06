@@ -31,11 +31,22 @@ exports.config = {
         timeout: 600000
     },
 
-    // ✅ Added ONLY screenshot on failure hook
-    afterStep: async function (test, context, { error }) {
+    // ✅ Screenshot on both passed and failed steps
+    afterStep: async function (test, context, { error, result }) {
+        const fs = require('fs');
+        const dir = './Screenshots';
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         if (error) {
-            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-            await browser.saveScreenshot(`./Screenshots/FAILED_${timestamp}.png`);
+            // Screenshot for failed step
+            await browser.saveScreenshot(`${dir}/FAILED_${timestamp}.png`);
+        } else {
+            // Screenshot for passed step
+            await browser.saveScreenshot(`${dir}/PASSED_${timestamp}.png`);
         }
     }
 };
