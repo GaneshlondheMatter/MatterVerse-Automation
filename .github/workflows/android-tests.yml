@@ -49,7 +49,7 @@ jobs:
       - name: Start Appium Server
         run: |
           echo "Starting Appium..."
-          ./node_modules/.bin/appium --port 4723 &
+          ./node_modules/.bin/appium --port 4723 --base-path /wd/hub &
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/wd/hub/status
 
