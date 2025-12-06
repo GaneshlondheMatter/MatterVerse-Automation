@@ -16,7 +16,7 @@ jobs:
 
     services:
       docker:
-        image: us-docker.pkg.dev/android-emulator-container/emulator/emulator
+        image: generic/android-emulator
         ports:
           - 6080:6080
           - 5554:5554
