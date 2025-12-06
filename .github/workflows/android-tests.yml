@@ -7,51 +7,60 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   android-tests:
     runs-on: ubuntu-latest
 
     services:
-      docker:
+      emulator:
         image: budtmo/docker-android:emulator_11.0
         ports:
           - 6080:6080
           - 5554:5554
           - 5555:5555
+        options: --privileged
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          lfs: true   # Ensures APK is downloaded
+
+      - name: Verify APK Exists
+        run: ls -lh app/
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'   # Upgrade Node to avoid EBADENGINE issues
+          node-version: 20
 
       - name: Install dependencies
         run: |
           npm install
-          npm install --save-dev appium wait-on   # Ensure Appium and wait-on installed
+          npm install --save-dev appium wait-on
 
-      - name: Fix Permissions
+      - name: Wait for Emulator to Boot
         run: |
-          chmod +x ./node_modules/.bin/wdio
-          chmod +x ./node_modules/.bin/appium   # Fix Appium execute permission
+          echo "Waiting for Android emulator..."
+          sleep 35
+          adb devices
 
-      - name: Wait for Android Emulator to Boot
+      - name: Install APK into Emulator
         run: |
-          echo "Waiting for emulator to boot..."
-          sleep 25
+          echo "Installing MatterVerseQA APK..."
+          adb install -r app/MatterVerseQA_1.91.apk
 
       - name: Start Appium Server
         run: |
           echo "Starting Appium..."
-          ./node_modules/.bin/appium --port 4723 --base-path /wd/hub &
-          echo "Waiting for Appium to be ready..."
-          npx wait-on http://localhost:4723/wd/hub/status
+          ./node_modules/.bin/appium --port 4723 --base-path / &
 
-      - name: Run Tests
+          echo "Waiting for Appium to be ready..."
+          npx wait-on http://localhost:4723/status
+
+      - name: Fix WDIO permissions
+        run: chmod +x ./node_modules/.bin/wdio
+
+      - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js
