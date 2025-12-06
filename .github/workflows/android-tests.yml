@@ -34,8 +34,19 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Wait for Android Emulator to Boot
+      run: |
+        echo "Waiting for emulator to boot..."
+        # Give emulator time to fully start
+        sleep 25
+
     - name: Start Appium Server
-      run: docker run -d -p 4723:4723 appium/appium
+      run: |
+        # Start Appium in background
+        npx appium --port 4723 &
+        echo "Waiting for Appium to be ready..."
+        # Wait until Appium server responds
+        npx wait-on http://localhost:4723/wd/hub/status
 
     - name: Fix Permissions
       run: chmod +x ./node_modules/.bin/wdio
