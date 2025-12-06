@@ -36,6 +36,11 @@ jobs:
           npm install
           npm install --save-dev appium wait-on   # Ensure Appium and wait-on installed
 
+      - name: Fix Permissions
+        run: |
+          chmod +x ./node_modules/.bin/wdio
+          chmod +x ./node_modules/.bin/appium   # Fix Appium execute permission
+
       - name: Wait for Android Emulator to Boot
         run: |
           echo "Waiting for emulator to boot..."
@@ -44,12 +49,9 @@ jobs:
       - name: Start Appium Server
         run: |
           echo "Starting Appium..."
-          npx appium --port 4723 &
+          ./node_modules/.bin/appium --port 4723 &
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/wd/hub/status
-
-      - name: Fix Permissions
-        run: chmod +x ./node_modules/.bin/wdio
 
       - name: Run Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js
