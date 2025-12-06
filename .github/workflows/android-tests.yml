@@ -64,12 +64,6 @@ jobs:
       - name: Fix Appium Permissions
         run: chmod +x ./node_modules/.bin/appium
 
-      - name: Start screen recording
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Starting screen recording..."
-          docker exec -d $EMULATOR_ID adb shell screenrecord /sdcard/test_run.mp4
-
       - name: Start Appium Server
         run: |
           chmod +x ./node_modules/.bin/appium
@@ -84,33 +78,11 @@ jobs:
       - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      - name: Stop screen recording
-        if: always()
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Stopping screenrecord..."
-          docker exec $EMULATOR_ID pkill -l SIGINT screenrecord || true
-          sleep 2
-          docker exec $EMULATOR_ID ls -lh /sdcard/
-
-      - name: Pull emulator video
-        if: always()
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Pulling video..."
-          docker cp $EMULATOR_ID:/sdcard/test_run.mp4 ./test_run.mp4 || echo "Video not found!"
-
-      - name: Upload test video
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: emulator-video
-          path: ./test_run.mp4
-
+      # ✅ UPDATED SCREENSHOT SECTION
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: ./screenshots/
+          path: ./Screenshots/
           if-no-files-found: ignore

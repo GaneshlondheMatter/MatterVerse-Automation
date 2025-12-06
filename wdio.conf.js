@@ -22,12 +22,20 @@ exports.config = {
 
     hostname: '127.0.0.1',
     port: 4723,
-    // path: '/wd/hub',     // ✅ REQUIRED for Appium default installation
-    path: '/',     // ✅ REQUIRED for Appium default installation
+    // path: '/wd/hub', // ✅ REQUIRED for Appium default installation
+    path: '/',     // kept exactly as you had
 
     framework: 'mocha',
     mochaOpts: {
         ui: 'bdd',
         timeout: 600000
+    },
+
+    // ✅ Added ONLY screenshot on failure hook
+    afterStep: async function (test, context, { error }) {
+        if (error) {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+            await browser.saveScreenshot(`./Screenshots/FAILED_${timestamp}.png`);
+        }
     }
 };
