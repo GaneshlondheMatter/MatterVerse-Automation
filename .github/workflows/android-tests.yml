@@ -28,7 +28,7 @@ jobs:
           lfs: true   # Ensures APK is downloaded
 
       - name: Verify APK Exists
-        run: ls -lh app/
+        run: ls -lh apps/
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
