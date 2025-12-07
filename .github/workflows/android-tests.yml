@@ -12,14 +12,14 @@ jobs:
   android-tests:
     runs-on: ubuntu-latest
 
-    services:
-      emulator:
-        image: budtmo/docker-android:emulator_11.0
-        ports:
-          - 6080:6080
-          - 5554:5554
-          - 5555:5555
-        options: --privileged
+services:
+  emulator:
+    image: budtmo/docker-android:emulator_11.0
+    ports:
+      - 6080:6080
+      - 5554:5554
+      - 5555:5555
+    options: --privileged -e APPIUM=false
 
     steps:
       - name: Checkout code
