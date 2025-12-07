@@ -30,6 +30,14 @@ exports.config = {
         ui: 'bdd',
         timeout: 600000
     },
+    // ✅ GLOBAL WAIT FOR ALL TESTS (ADDED)
+    before: function () {
+        global.waitForElement = async function (selector, timeout = 15000) {
+            const el = await $(selector);
+            await el.waitForDisplayed({ timeout });
+            return el;
+        };
+    },
 
     // ✅ Screenshot on both passed and failed steps
     afterStep: async function (test, context, { error, passed }) {
