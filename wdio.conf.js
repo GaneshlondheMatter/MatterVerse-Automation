@@ -40,25 +40,26 @@ exports.config = {
     },
 
     // ✅ Screenshot on both passed and failed steps
-    afterStep: async function (test, context, { error, passed }) {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+     afterStep: async function (test, context, { error, passed }) {
+        const fs = require('fs');
+        const path = require('path');
 
-        const fs = require("fs");
-        const path = require("path");
-        const screenshotDir = path.join(process.cwd(), "Screenshots");
+        const dir = path.resolve('./Screenshots');
 
-        // Ensure screenshot folder exists (CI friendly)
-        if (!fs.existsSync(screenshotDir)) {
-            fs.mkdirSync(screenshotDir, { recursive: true });
+        // Ensure folder exists
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
         }
 
-        // Screenshot file path
-        const filePath = path.join(
-            screenshotDir,
-            `${error ? "FAILED" : "PASSED"}_${timestamp}.png`
-        );
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const status = error ? "FAILED" : "PASSED";
+        const filename = `${status}_${timestamp}.png`;
+        const filepath = path.join(dir, filename);
 
-        await browser.saveScreenshot(filePath);
+        // Always capture screenshot
+        await browser.saveScreenshot(filepath);
+
+        console.log(`📸 Screenshot saved: ${filepath}`);
     },
 
 };
