@@ -1,12 +1,10 @@
-name: Android Appium Tests
+name: Android Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   android-tests:
@@ -19,75 +17,61 @@ jobs:
           - 6080:6080
           - 5554:5554
           - 5555:5555
-        options: --privileged -e APPIUM=false
+        options: >-
+          --privileged
+          -e DEVICE=Samsung Galaxy S10
+          -e APPIUM=false
+          -e AUTO_START=false
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          lfs: true
 
-      - name: Verify APK Exists
+      - name: Verify APK
         run: ls -lh apps/
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install NPM Dependencies
         run: |
           npm install
           npm install --save-dev appium wait-on
 
-      - name: Wait for Emulator to Boot
+      - name: Wait for Emulator Boot
         run: |
-          echo "Waiting for Android emulator..."
+          echo "Waiting for emulator container..."
           sleep 40
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Detected emulator: $EMULATOR_ID"
-          docker exec $EMULATOR_ID adb wait-for-device
-          docker exec $EMULATOR_ID adb devices
+          EMU=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          echo "Emulator container: $EMU"
+          docker exec $EMU adb wait-for-device
+          docker exec $EMU adb devices
 
-      - name: Copy APK into Emulator Container
+      - name: Push APK to Emulator
         run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp apps/MatterVerseQA_1.91.apk $EMULATOR_ID:/tmp/MatterVerseQA_1.91.apk
+          EMU=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
+          docker cp apps/MatterVerseQA_1.91.apk $EMU:/tmp/app.apk
+          docker exec $EMU adb install -r /tmp/app.apk
 
-      - name: Install APK inside Emulator
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec $EMULATOR_ID adb install -r /tmp/MatterVerseQA_1.91.apk
-
-      - name: Fix Appium Permissions
-        run: chmod +x ./node_modules/.bin/appium
-
-      - name: Start Appium Server
+      - name: Start External Appium
         run: |
           chmod +x ./node_modules/.bin/appium
-          ./node_modules/.bin/appium --port 4723 --base-path / &
-          echo "Waiting for Appium to be ready..."
+          ./node_modules/.bin/appium --port 4723 --base-path / & 
+          echo "Waiting for Appium server..."
           npx wait-on http://localhost:4723/status
 
-      - name: Fix WDIO permissions
-        run: chmod +x ./node_modules/.bin/wdio
-
-      - name: Run WDIO Android Tests
+      - name: Run WDIO Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      # --------------------------
-      # SCREENSHOT HANDLING
-      # --------------------------
       - name: Prepare Screenshots Folder
         run: mkdir -p ./Screenshots
 
-      - name: Verify Screenshots
-        run: ls -lh ./Screenshots || echo "No screenshots found"
-
-      - name: Upload screenshots
-        if: always()
+      - name: Upload Screenshots
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: screenshots
-          path: ./Screenshots/
+          path: Screenshots/
           if-no-files-found: ignore
