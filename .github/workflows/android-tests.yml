@@ -12,14 +12,14 @@ jobs:
   android-tests:
     runs-on: ubuntu-latest
 
-services:
-  emulator:
-    image: budtmo/docker-android:emulator_11.0
-    ports:
-      - 6080:6080
-      - 5554:5554
-      - 5555:5555
-    options: --privileged -e APPIUM=false
+    services:
+      emulator:
+        image: budtmo/docker-android:emulator_11.0
+        ports:
+          - 6080:6080
+          - 5554:5554
+          - 5555:5555
+        options: --privileged -e APPIUM=false
 
     steps:
       - name: Checkout code
@@ -44,10 +44,8 @@ services:
         run: |
           echo "Waiting for Android emulator..."
           sleep 40
-
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           echo "Detected emulator: $EMULATOR_ID"
-
           docker exec $EMULATOR_ID adb wait-for-device
           docker exec $EMULATOR_ID adb devices
 
@@ -68,7 +66,6 @@ services:
         run: |
           chmod +x ./node_modules/.bin/appium
           ./node_modules/.bin/appium --port 4723 --base-path / &
-
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/status
 
@@ -78,7 +75,9 @@ services:
       - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      # ✅ Upload Screenshots 
+      # --------------------------
+      # SCREENSHOT HANDLING
+      # --------------------------
       - name: Prepare Screenshots Folder
         run: mkdir -p ./Screenshots
 
