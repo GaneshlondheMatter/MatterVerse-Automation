@@ -78,9 +78,12 @@ jobs:
       - name: Run WDIO Android Tests
         run: ./node_modules/.bin/wdio run wdio.conf.js || true
 
-      # ✅ Upload Screenshots
+      # ✅ Upload Screenshots 
+      - name: Prepare Screenshots Folder
+        run: mkdir -p ./Screenshots
+
       - name: Verify Screenshots
-        run: ls -lh ./Screenshots
+        run: ls -lh ./Screenshots || echo "No screenshots found"
 
       - name: Upload screenshots
         if: always()
