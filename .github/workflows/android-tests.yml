@@ -10,25 +10,13 @@ on:
 
 jobs:
   android-tests:
-    runs-on: ubuntu-latest
-
-    services:
-      emulator:
-        image: budtmo/docker-android:emulator_11.0
-        ports:
-          - 6080:6080
-          - 5554:5554
-          - 5555:5555
-        options: --privileged
+    runs-on: self-hosted  # Using your connected device
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           lfs: true
-
-      - name: Verify APK Exists
-        run: ls -lh apps/
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -39,25 +27,6 @@ jobs:
         run: |
           npm install
           npm install --save-dev appium wait-on allure-commandline
-
-      - name: Wait for Emulator to Boot
-        run: |
-          echo "Waiting for Android emulator..."
-          sleep 60
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Detected emulator: $EMULATOR_ID"
-          docker exec $EMULATOR_ID adb wait-for-device
-          docker exec $EMULATOR_ID adb devices
-
-      - name: Copy APK into Emulator Container
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp apps/MatterVerseQA_1.91.apk $EMULATOR_ID:/tmp/MatterVerseQA_1.91.apk
-
-      - name: Install APK inside Emulator
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec $EMULATOR_ID adb install -r /tmp/MatterVerseQA_1.91.apk
 
       - name: Fix Appium Permissions
         run: chmod +x ./node_modules/.bin/appium
