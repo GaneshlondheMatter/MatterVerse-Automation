@@ -24,15 +24,15 @@ exports.config = {
 
     hostname: '127.0.0.1',
     port: 4723,
-    path: '/', // ✅ REQUIRED for Appium default installation
-    // path: '/',     // kept exactly as you had
+    path: '/',
 
     framework: 'mocha',
     mochaOpts: {
         ui: 'bdd',
         timeout: 600000
     },
-    // ✅ GLOBAL WAIT FOR ALL TESTS (ADDED)
+
+    // ✅ GLOBAL WAIT FOR ALL TESTS
     before: function () {
         global.waitForElement = async function (selector, timeout = 15000) {
             const el = await $(selector);
@@ -47,8 +47,6 @@ exports.config = {
         const path = require('path');
 
         const dir = path.resolve('./Screenshots');
-
-        // Ensure folder exists
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -58,10 +56,17 @@ exports.config = {
         const filename = `${status}_${timestamp}.png`;
         const filepath = path.join(dir, filename);
 
-        // Always capture screenshot
         await browser.saveScreenshot(filepath);
-
         console.log(`📸 Screenshot saved: ${filepath}`);
     },
 
+    // ✅ Add Allure Reporter
+    reporters: [
+        'spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: false,
+        }]
+    ],
 };
