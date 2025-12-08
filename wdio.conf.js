@@ -11,18 +11,20 @@ exports.config = {
         platformName: "Android",
         "appium:automationName": "UiAutomator2",
         "appium:deviceName": "RZCXA02WYYH",
-        "appium:platformVersion": "16",
+        "appium:platformVersion": "11",
         "appium:appPackage": "com.matter.companion.qa",
         "appium:appActivity": "com.matter.companion.view.onbording.OnBoardingActivity",
-        "appium:noReset": true,
-        "appium:autoGrantPermissions": true
+        "appium:appWaitActivity": "*",
+        "appium:noReset": false,
+        "appium:autoGrantPermissions": true,
+        "appium:newCommandTimeout": 300,
     }],
 
     logLevel: 'info',
 
     hostname: '127.0.0.1',
     port: 4723,
-    path: '/wd/hub', // ✅ REQUIRED for Appium default installation
+    path: '/', // ✅ REQUIRED for Appium default installation
     // path: '/',     // kept exactly as you had
 
     framework: 'mocha',
@@ -40,7 +42,7 @@ exports.config = {
     },
 
     // ✅ Screenshot on both passed and failed steps
-     afterStep: async function (test, context, { error, passed }) {
+    afterStep: async function (test, context, { error, passed }) {
         const fs = require('fs');
         const path = require('path');
 
