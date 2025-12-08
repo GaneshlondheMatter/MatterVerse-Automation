@@ -24,49 +24,54 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        shell: cmd
         run: |
           npm install
           npm install --save-dev appium wait-on allure-commandline
 
       - name: Fix Appium Permissions
-        run: chmod +x ./node_modules/.bin/appium
+        shell: cmd
+        run: icacls "node_modules\.bin\appium" /grant Everyone:F /T
 
       - name: Start Appium Server
+        shell: cmd
         run: |
-          chmod +x ./node_modules/.bin/appium
-          ./node_modules/.bin/appium --port 4723 --base-path / &
-          echo "Waiting for Appium to be ready..."
+          start /B node_modules\.bin\appium --port 4723 --base-path /
+          echo Waiting for Appium to be ready...
           npx wait-on http://localhost:4723/status
 
       - name: Fix WDIO permissions
-        run: chmod +x ./node_modules/.bin/wdio
+        shell: cmd
+        run: icacls "node_modules\.bin\wdio" /grant Everyone:F /T
 
       - name: Prepare Screenshots Folder
-        run: mkdir -p ./Screenshots
+        shell: cmd
+        run: if not exist Screenshots mkdir Screenshots
 
       - name: Run WDIO Android Tests
-        run: ./node_modules/.bin/wdio run wdio.conf.js || true
+        shell: cmd
+        run: node_modules\.bin\wdio run wdio.conf.js || exit 0
 
       - name: Verify Screenshots
-        run: ls -lh ./Screenshots || echo "No screenshots found"
+        shell: cmd
+        run: dir Screenshots || echo No screenshots found
 
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: ./Screenshots/**/*.png
+          path: Screenshots\**\*.png
           if-no-files-found: ignore
 
-      # Generate Allure report
       - name: Generate Allure Report
+        shell: cmd
         run: npx allure generate allure-results --clean -o allure-report
 
-      # Upload full Allure report
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: ./allure-report
+          path: allure-report
           if-no-files-found: ignore
