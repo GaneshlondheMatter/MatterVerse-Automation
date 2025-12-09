@@ -1,0 +1,3 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","59494","Should upload front & back side of Driving License successfully","Document Upload Driving License","Tue Dec 09 20:06:19 IST 2025","passed","Tue Dec 09 20:07:18 IST 2025","","","",""
+"","16599","Should login successfully using valid phone number and OTP","Login Flow Automation","Tue Dec 09 19:33:43 IST 2025","passed","Tue Dec 09 19:34:00 IST 2025","","","",""

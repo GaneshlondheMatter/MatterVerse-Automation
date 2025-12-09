@@ -2,7 +2,7 @@ const { $ } = require('@wdio/globals');
 const Page = require('./page');
 
 
-class DrivingLicensePage extends Page  {
+class DrivingLicensePage extends Page {
 
     // ------------------- LOCATORS -------------------
 
@@ -90,6 +90,15 @@ class DrivingLicensePage extends Page  {
         return $('//android.widget.ImageView[@resource-id="com.matter.companion.qa:id/ivCross"]');
     }
 
+    get DrivingFrontSideUploaded() {
+        return $('//android.widget.ImageView[@resource-id="com.matter.companion.qa:id/ivdocument"]');
+    }
+
+    get DrivingBackSideUploaded() {
+        return $('//android.widget.ImageView[@resource-id="com.matter.companion.qa:id/ivdocumentBack"]');
+    }
+
+
     // ------------------- WAIT + CLICK METHOD -------------------
 
     async clickElement(element) {
@@ -109,16 +118,22 @@ class DrivingLicensePage extends Page  {
         await this.clickElement(this.DrivingLicenseLink);
     }
 
-    async uploadFrontSide() {
-        await this.clickElement(this.UploadFrontSide);
+    async uploadFrontSide(isModify = false) {
+        // If NOT modify → click upload button first
+        if (!isModify) {
+            await this.clickElement(this.UploadFrontSide);
+        }
+        // Common flow for both fresh upload + modify
         await this.clickElement(this.GalleryOption);
         await this.clickElement($(this.DownloadFolder));
         await this.clickElement(this.SelectItem);
         await this.clickElement(this.DoneBtn);
     }
 
-    async uploadBackSide() {
-        await this.clickElement(this.UploadBackSide);
+    async uploadBackSide(isModify = false) {
+        if (!isModify) {
+            await this.clickElement(this.UploadBackSide);
+        }
         await this.clickElement(this.GalleryOption);
         await this.clickElement($(this.DownloadFolder));
         await this.clickElement(this.SelectItem);
@@ -136,6 +151,16 @@ class DrivingLicensePage extends Page  {
         await this.clickElement(this.DeleteBtn);
         await this.clickElement(this.DeleteConfirmBtn);
     }
+
+    async FrontPageModifyBtn() {
+        await this.clickElement(this.FrontPageMenuBtn);
+        await this.clickElement(this.ModifyBtn);
+    }
+    async BackPageModifyBtn() {
+        await this.clickElement(this.BackPageMenuBtn);
+        await this.clickElement(this.ModifyBtn);
+    }
+
 
 }
 

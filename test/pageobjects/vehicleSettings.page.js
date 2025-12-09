@@ -44,6 +44,10 @@ class VehicleSettingsPage extends Page {
         await this.clickElement(this.NotificationPreference);
     }
 
+    async clickVehicleSettingsLink() {
+        await this.clickElement(this.VehicleSettingsLink);
+    }
+
     async clickDocumentsLink() {
         await this.clickElement(this.DocumentsLink);
     }
