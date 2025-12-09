@@ -10,10 +10,10 @@ describe("Document Upload Driving License", () => {
 
         await LoginHelper.login("8780981556", "8319");
          await browser.pause(6000);
-        await matterHomePage.clickMatterHomeLogo();
-         await browser.pause(6000);
-        await matterHomePage.clickMyMatterTab();
-         await browser.pause(6000);
+        // await matterHomePage.clickMatterHomeLogo();
+        //  await browser.pause(6000);
+        // await matterHomePage.clickMyMatterTab();
+        //  await browser.pause(6000);
         await matterHomePage.clickAccountTab();
          await browser.pause(6000);
         // Step 1: Navigate to Vehicle Settings → Documents
