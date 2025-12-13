@@ -21,7 +21,7 @@ class SwipeHelper {
         await driver.pause(800);
     }
 
-    async scrollUntilVisible(element, maxScrolls = 10) {
+    async scrollDownUntilVisible(element, maxScrolls = 10) {
         for (let i = 0; i < maxScrolls; i++) {
             if (await element.isDisplayed()) return true;
             await this.scrollDown();

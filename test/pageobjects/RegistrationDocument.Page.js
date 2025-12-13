@@ -9,9 +9,10 @@ class RegistrationDocumentPage extends Page {
         return $("//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvHeading']");
     }
 
-    get RegistrationUploadedDoc() {
-        return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[1]");
-    }
+  get RegistrationUploadedDoc() {
+    return $("(//android.view.ViewGroup[@resource-id='com.matter.companion.qa:id/viewUploadOne']/android.view.ViewGroup)");
+}
+
 
     get MenuBtn() {
         return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[1]");
@@ -33,8 +34,33 @@ class RegistrationDocumentPage extends Page {
         return $("//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvUploadOne']");
     }
 
+    get FirstRegistrationDoc() {
+        return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[1]");
+    }
+    get SecondRegistrationDoc() {
+        return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[2]");
+    }
+    getMenuIcon(index) {
+        return $(`(//android.widget.ImageView[@resource-id="com.matter.companion.qa:id/ivMenu"])[${index}]`);
+    }
+
+
 
     // ---------------- ACTIONS ----------------
+
+    async clickMenuIcon(index) {
+    await this.getMenuIcon(index).click();
+}
+
+
+    async deleteFlow() {
+        await this.DeleteBtn.click();
+        await this.DeleteConfirmBtn.click();
+    }
+    async modiifyFlow() {
+        await this.ModifyBtn.click();
+
+    }
 
     async clickMenu() {
         await this.MenuBtn.click();

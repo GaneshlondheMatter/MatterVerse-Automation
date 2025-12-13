@@ -5,13 +5,16 @@ class InsuranceDocumentPage extends Page {
 
     // ---------------- LOCATORS ----------------
 
-    get InsuranceUploadedDoc() {
-        return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[1]");
+    get InsuranceUploadedLink() {
+        return $("(//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvInsurance'])");
+    }
+    getInsuranceUploadedDoc(index) {
+        return $(`(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[${index}]`);
     }
 
-    get MenuButton() {
-        return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[1]");
-    }
+  getMenuButton(index) {
+    return $(`(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[${index}]`);
+}
 
     get UploadInsuranceDoc() {
         return $("//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvUploadOne']");
@@ -32,13 +35,18 @@ class InsuranceDocumentPage extends Page {
 
     // ---------------- CLICK ACTIONS ----------------
 
+    async isInsuranceDocDisplayed(index) {
+        return await this.getInsuranceUploadedDoc(index).isDisplayed();
+    }
+
     async clickInsuranceUploadedDoc() {
         await this.InsuranceUploadedDoc.click();
     }
 
-    async clickMenuButton() {
-        await this.MenuButton.click();
-    }
+ async clickMenuButton(index) {
+    await this.getMenuButton(index).click();
+}
+
 
     async clickUploadInsuranceDoc() {
         await this.UploadInsuranceDoc.click();
