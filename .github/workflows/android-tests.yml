@@ -91,7 +91,7 @@ jobs:
             echo "No allure-results found, skipping report generation."
           fi
 
-      # ✅ Upload artifacts (unchanged)
+      # ✅ Upload artifacts
       - name: Upload Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -102,10 +102,12 @@ jobs:
             ./allure-report
           if-no-files-found: ignore
 
-      # 🚀 NEW: Deploy Allure Report to GitHub Pages (FIX FOR LOADING ISSUE)
+      # 🚀 FINAL FIX: Deploy Allure Report properly
       - name: Deploy Allure Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./allure-report
+          publish_branch: gh-pages
+          force_orphan: true
