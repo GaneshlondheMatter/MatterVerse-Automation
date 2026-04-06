@@ -52,12 +52,12 @@ jobs:
       - name: Copy APK into Emulator Container
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/MatterVerseQA_1.91.apk
+          docker cp apps/QA_2026_03_27_MatterVerse_V_1_101_Internal_Testing.apk "$EMULATOR_ID":/tmp/QA_2026_03_27_MatterVerse_V_1_101_Internal_Testing.apk
 
       - name: Install APK inside Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb install -r /tmp/MatterVerseQA_1.91.apk
+          docker exec "$EMULATOR_ID" adb install -r /tmp/QA_2026_03_27_MatterVerse_V_1_101_Internal_Testing.apk
 
       - name: Fix Appium Permissions
         run: chmod +x ./node_modules/.bin/appium
@@ -81,7 +81,7 @@ jobs:
       - name: Verify Screenshots
         run: ls -lh ./Screenshots || echo "No screenshots found"
 
-      # ✅ Generate Allure Report from WDIO results
+      # ✅ Generate Allure Report
       - name: Generate Allure Report from WDIO Results
         run: |
           if [ -d "allure-results" ]; then
@@ -91,7 +91,7 @@ jobs:
             echo "No allure-results found, skipping report generation."
           fi
 
-      # ✅ Upload screenshots and Allure report as artifacts
+      # ✅ Upload artifacts (unchanged)
       - name: Upload Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -101,3 +101,11 @@ jobs:
             ./Screenshots/**/*.png
             ./allure-report
           if-no-files-found: ignore
+
+      # 🚀 NEW: Deploy Allure Report to GitHub Pages (FIX FOR LOADING ISSUE)
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
