@@ -1,14 +1,15 @@
 const LoginHelper = require('../../Helper/login.helper');
 const { ControlPage } = require('../pageobjects/Control.page');
 const { FindMyMatterPage } = require('../pageobjects/FindMyMatter.page');
-const SwipeHelper = require('../../Helper/Swipe.helper');   
+const SwipeHelper = require('../../Helper/Swipe.helper');
 
 describe("Find My Matter Flow", () => {
     const control = new ControlPage();
     const findMatter = new FindMyMatterPage();
 
     it("Step 1: Validate Find My Matter UI elements", async () => {
-        await LoginHelper.login("8780981556", "8319");
+        // await LoginHelper.login("8780981556", "8319");
+        await LoginHelper.loginIntoMatterVerse();
         await control.controlButton.waitForDisplayed({ timeout: 5000 });
         await control.controlButton.click();
         await control.findMyMatterBtn.click();
@@ -54,7 +55,7 @@ describe("Find My Matter Flow", () => {
         await findMatter.backToRecenterViewBtn.click();
     });
 
-      it("Step 5: verify 3D View button & North Direction is not Displayed", async () => {
+    it("Step 5: verify 3D View button & North Direction is not Displayed", async () => {
         await expect(findMatter.backToRecenterViewBtn).not.toBeDisplayed();
         await expect(findMatter.northDirection).not.toBeDisplayed();
     });

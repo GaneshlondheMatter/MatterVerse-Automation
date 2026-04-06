@@ -13,7 +13,6 @@ class RegistrationDocumentPage extends Page {
     return $("(//android.view.ViewGroup[@resource-id='com.matter.companion.qa:id/viewUploadOne']/android.view.ViewGroup)");
 }
 
-
     get MenuBtn() {
         return $("(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[1]");
     }
@@ -51,7 +50,6 @@ class RegistrationDocumentPage extends Page {
     async clickMenuIcon(index) {
     await this.getMenuIcon(index).click();
 }
-
 
     async deleteFlow() {
         await this.DeleteBtn.click();

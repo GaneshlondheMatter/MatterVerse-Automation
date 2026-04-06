@@ -10,13 +10,9 @@ describe('Bike Booking Flow', () => {
 
     it('should complete the full bike booking flow', async () => {
 
-        await LoginHelper.login("8780981556", "8319");
-
-        await matterHomePage.clickMatterHomeLogo();
-        await matterHomePage.clickMyMatterTab();
+        await LoginHelper.loginIntoMatterVerse();      
         await matterHomePage.clickAccountTab();
         // Step 1: Navigate to Vehicle Settings → Documents
-        // Click Documents
         await AccountPage.clickMyOrders()
 
         // Step 1: Click Book Your Aera → choose model
@@ -47,18 +43,18 @@ describe('Bike Booking Flow', () => {
         let randomIndex = Math.floor(Math.random() * total);
 
         await locations[randomIndex].click();
-        await browser.pause(2000);
 
-        await SwipeHelper.scrollUntilVisible(BookYourAeraPage.aeraIsAvailableText, 2);
+        await browser.pause(10000);
+
+        await SwipeHelper.scrollDownUntilVisible(BookYourAeraPage.expHubKharadi, 2);
         if (await BookYourAeraPage.sorryAeraNotAvailable.isDisplayed()) {
-            await SwipeHelper.scrollUntilVisible(BookYourAeraPage.sorryAeraNotAvailable, 2);
+            await SwipeHelper.scrollDownUntilVisible(BookYourAeraPage.sorryAeraNotAvailable, 2);
             await browser.pause(4000);
         }
         else {
-            await SwipeHelper.scrollUntilVisible(BookYourAeraPage.aeraIsAvailableText, 1);
+            await SwipeHelper.scrollDownUntilVisible(BookYourAeraPage.expHubKharadi, 1);
         }
         await browser.pause(2000);
-        // await SwipeHelper.scrollUntilVisible(BookYourAeraPage.emiCard, 1);
 
         // Step 5: If aera not available → try again
         if (await BookYourAeraPage.sorryAeraNotAvailable.isDisplayed()) {
@@ -77,7 +73,7 @@ describe('Bike Booking Flow', () => {
             await expect(BookYourAeraPage.aeraIsAvailableText).toBeDisplayed();
         }
 
-        await SwipeHelper.scrollUntilVisible(BookYourAeraPage.iAgreeCheckbox, 3);
+        await SwipeHelper.scrollDownUntilVisible(BookYourAeraPage.iAgreeCheckbox, 3);
         await browser.pause(2000);
 
         // Step 6: Verify Order Summary

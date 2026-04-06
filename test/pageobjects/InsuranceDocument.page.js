@@ -12,9 +12,9 @@ class InsuranceDocumentPage extends Page {
         return $(`(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivdocument'])[${index}]`);
     }
 
-  getMenuButton(index) {
-    return $(`(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[${index}]`);
-}
+    getMenuButton(index) {
+        return $(`(//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivMenu'])[${index}]`);
+    }
 
     get UploadInsuranceDoc() {
         return $("//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvUploadOne']");
@@ -43,10 +43,9 @@ class InsuranceDocumentPage extends Page {
         await this.InsuranceUploadedDoc.click();
     }
 
- async clickMenuButton(index) {
-    await this.getMenuButton(index).click();
-}
-
+    async clickMenuButton(index) {
+        await this.getMenuButton(index).click();
+    }
 
     async clickUploadInsuranceDoc() {
         await this.UploadInsuranceDoc.click();

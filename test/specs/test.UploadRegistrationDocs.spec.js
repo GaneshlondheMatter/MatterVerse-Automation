@@ -10,7 +10,9 @@ describe("Document Upload Registration Dcos", () => {
 
     it("Should upload front & back side of Registration Dcos successfully", async () => {
 
-        await LoginHelper.login("8780981556", "8319");
+        // await LoginHelper.login("8780981556", "8319");
+        await LoginHelper.loginIntoMatterVerse();
+
         // await browser.pause(6000);
         await matterHomePage.clickMatterHomeLogo();
         await matterHomePage.clickMyMatterTab();

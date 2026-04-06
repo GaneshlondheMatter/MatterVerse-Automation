@@ -13,7 +13,7 @@ class AccountPage extends Page {
     }
 
     get VehicleImage() {
-        return $("//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivBikeImage']");
+        return $('//androidx.viewpager.widget.ViewPager[@resource-id="com.matter.companion.qa:id/vp_bike"]/androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup/android.widget.ImageView');
     }
 
     get BatteryWarrantyActiveText() {

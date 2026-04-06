@@ -11,7 +11,8 @@ describe("Document Upload Insurance License", () => {
 
     it("Should upload front & back side of Insurance License successfully", async () => {
 
-        await LoginHelper.login("8780981556", "8319");
+        // await LoginHelper.login("8780981556", "8319");
+        await LoginHelper.loginIntoMatterVerse();
         // await browser.pause(6000);
         await matterHomePage.clickMatterHomeLogo();
         await matterHomePage.clickMyMatterTab();

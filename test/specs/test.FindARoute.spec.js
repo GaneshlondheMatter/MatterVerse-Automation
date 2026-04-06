@@ -1,7 +1,7 @@
 const LoginHelper = require('../../Helper/login.helper');
 const { FindARoutePage } = require('../pageobjects/FindARoute.page');
 const { ControlPage } = require('../pageobjects/Control.page');
-const SwipeHelper = require('../../Helper/Swipe.helper');
+const SwipeHelper = require('../../Helper/swipe.helper');
 
 describe("Find A Route Flow", () => {
     const control = new ControlPage();
@@ -9,7 +9,8 @@ describe("Find A Route Flow", () => {
 
     it("Step 1: Validate Find A Route UI elements", async () => {
 
-        await LoginHelper.login("8780981556", "8319");
+        // await LoginHelper.login("8780981556", "8319");
+        await LoginHelper.loginIntoMatterVerse();
         await control.controlButton.waitForDisplayed({ timeout: 5000 });
         await SwipeHelper.scrollDownUntilVisible(control.findARouteBtn);
         await control.findARouteBtn.click();

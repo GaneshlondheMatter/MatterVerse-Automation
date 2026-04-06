@@ -6,7 +6,7 @@ class LoginHelper {
      * @param {string} phoneNumber 
      * @param {string} otp 
      */
-    async login(phoneNumber, otp) {
+    async loginIntoMatterVerse() {
 
         // 1️⃣ Verify all initial UI elements
         await LoginPage.verifyLoginScreenDisplayed();
@@ -15,10 +15,10 @@ class LoginHelper {
         await LoginPage.clickForwardArrow();
 
         // 3️⃣ Enter Phone Number
-        await LoginPage.enterPhoneNumber(phoneNumber);
+        await LoginPage.enterPhoneNumber("7492901367");
 
         // 4️⃣ Enter OTP using loop inside POM
-        await LoginPage.enterOTP(otp);
+        await LoginPage.enterOTP("2067");
 
         // 5️⃣ Click Login Button
         await LoginPage.clickLogin();

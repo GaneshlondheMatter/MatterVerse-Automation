@@ -11,13 +11,13 @@ exports.config = {
         platformName: "Android",
         "appium:automationName": "UiAutomator2",
         "appium:deviceName": "RZCXA02WYYH",
-        "appium:platformVersion": "11",
+        "appium:platformVersion": "16",
         "appium:appPackage": "com.matter.companion.qa",
         "appium:appActivity": "com.matter.companion.view.onbording.OnBoardingActivity",
         "appium:appWaitActivity": "*",
         "appium:noReset": false,
         "appium:autoGrantPermissions": true,
-        "appium:newCommandTimeout": 300,
+        "appium:newCommandTimeout": 3000,
     }],
 
     logLevel: 'info',
@@ -34,7 +34,7 @@ exports.config = {
 
     // ✅ GLOBAL WAIT FOR ALL TESTS
     before: function () {
-        global.waitForElement = async function (selector, timeout = 15000) {
+        global.waitForElement = async function (selector, timeout = 25000) {
             const el = await $(selector);
             await el.waitForDisplayed({ timeout });
             return el;
@@ -46,11 +46,10 @@ exports.config = {
         const fs = require('fs');
         const path = require('path');
 
-        const dir = path.resolve('./Screenshots');
+        const dir = path.resolve('./Screenshot');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
-
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         const status = error ? "FAILED" : "PASSED";
         const filename = `${status}_${timestamp}.png`;
